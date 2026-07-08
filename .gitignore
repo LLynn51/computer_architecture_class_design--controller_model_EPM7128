@@ -1,0 +1,47 @@
+# ============================================================
+# TEC-8 模型机控制器项目 - Git 忽略规则
+# ============================================================
+
+# AI 工具配置
+.trae/
+.agents/
+.uploads/
+
+# Quartus II 编译数据库
+db/
+incremental_db/
+
+# Quartus II 功能仿真网表
+simulation/
+
+# Quartus II 编译产物
+*.pin
+*.done
+*.dpf
+*.rpt
+*.summary
+*.qmsg
+*.qdf
+*.qarlog
+*.sld
+*.smsg
+*.qpf
+*.qsf
+*.qws
+*.sof
+
+# Icarus Verilog 仿真产物
+sim/*.vvp
+*.vcd
+*.lxt
+
+# 备份与临时文件
+*.bak
+*~
+
+# Office 临时文件
+~$*
+
+# 系统临时文件
+pdf_output.txt
+Thumbs.db
