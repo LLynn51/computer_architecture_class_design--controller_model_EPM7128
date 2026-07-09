@@ -135,7 +135,6 @@ module controller (
                   M <= 1'b1;
                   ABUS <= 1'b1;
                   LAR <= 1'b1;
-                  LONG <= 1'b1;
                   // LIR~EX_valid部分的作用是flush掉一阶段取指，下同
                   LIR <= 1'b0;
                   PCINC <= 1'b0;
@@ -150,7 +149,6 @@ module controller (
                   M <= 1'b1;
                   ABUS <= 1'b1;
                   LAR <= 1'b1;
-                  LONG <= 1'b1;
                   // LIR~EX_valid部分的作用是flush掉一阶段取指，下同
                   LIR <= 1'b0;
                   PCINC <= 1'b0;
@@ -196,6 +194,8 @@ module controller (
                 STP: begin
                   STOP <= 1'b1;
                   halted <= 1'b1;
+                  LIR <= 1'b0;
+                  PCINC <= 1'b0;
                   IF_valid <= 1'b0;
                   EX_valid <= 1'b0;
                   W <= W1;
@@ -208,6 +208,9 @@ module controller (
             end
           end
           WREG: begin
+                EX_IR <= 4'b0000;
+                IF_valid <= 1'b0;
+                EX_valid <= 1'b0;
             if (!STO) begin
               SBUS <= 1'b1;
               SEL <= 4'b0011;
@@ -225,6 +228,9 @@ module controller (
             end
           end
           RREG: begin
+                EX_IR <= 4'b0000;
+                IF_valid <= 1'b0;
+                EX_valid <= 1'b0;
             SEL <= 4'b0001;
             SELCTL <= 1'b1;
             STOP <= 1'b1;
@@ -232,6 +238,9 @@ module controller (
             STO <= 1'b0;
           end
           RMEM: begin
+                EX_IR <= 4'b0000;
+                IF_valid <= 1'b0;
+                EX_valid <= 1'b0;
             if (!STO) begin
               SBUS <= 1'b1;
               LAR <= 1'b1;
@@ -251,6 +260,9 @@ module controller (
             end
           end
           WMEM: begin
+                EX_IR <= 4'b0000;
+                IF_valid <= 1'b0;
+                EX_valid <= 1'b0;
             if (!STO) begin
               SBUS <= 1'b1;
               LAR <= 1'b1;
@@ -296,6 +308,9 @@ module controller (
                 endcase
                 end 
           WREG: begin
+                EX_IR <= 4'b0000;
+                IF_valid <= 1'b0;
+                EX_valid <= 1'b0;
             if (!STO) begin
               SBUS <= 1'b1;
               SEL <= 4'b0100;
@@ -310,20 +325,24 @@ module controller (
               SELCTL <= 1'b1;
               DRW <= 1'b1;
               STOP <= 1'b1;
-              LONG <= 1'b1;
               W <= W0;
               STO <= 1'b1;
             end
           end
           RREG: begin
+                EX_IR <= 4'b0000;
+                IF_valid <= 1'b0;
+                EX_valid <= 1'b0;
             SEL <= 4'b1011;
             SELCTL <= 1'b1;
             STOP <= 1'b1;
-            LONG <= 1'b1;
             W <= W0;
             STO <= 1'b0;
           end
           WMEM: begin
+                EX_IR <= 4'b0000;
+                IF_valid <= 1'b0;
+                EX_valid <= 1'b0;
             if (!STO) begin
               SBUS <= 1'b1;
               LAR <= 1'b1;
@@ -348,11 +367,10 @@ module controller (
           end
         endcase
       end
-      // 暂不需要第三阶段
-      /*
+      // 最新版本没有路径主动进入W3，但为防止历史遗留问题放一个兜底
       else if (W == W3) begin
         W<=W1;
-      end*/
+      end
     end
   end
 
