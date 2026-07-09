@@ -136,7 +136,14 @@ module controller (
                   ABUS <= 1'b1;
                   LAR <= 1'b1;
                   LONG <= 1'b1;
-                  W <= W3;
+                  // LIR~EX_valid部分的作用是flush掉一阶段取指，下同
+                  LIR <= 1'b0;
+                  PCINC <= 1'b0;
+                  IF_valid <= 1'b0;
+                  EX_valid <= 1'b0;
+                  W <= W2;
+                  // 本拍依旧执行LD指令
+                  EX_IR <= EX_IR;
                 end
                 ST: begin
                   S <= 4'b1111;
@@ -144,7 +151,14 @@ module controller (
                   ABUS <= 1'b1;
                   LAR <= 1'b1;
                   LONG <= 1'b1;
-                  W <= W3;
+                  // LIR~EX_valid部分的作用是flush掉一阶段取指，下同
+                  LIR <= 1'b0;
+                  PCINC <= 1'b0;
+                  IF_valid <= 1'b0;
+                  EX_valid <= 1'b0;
+                  W <= W2;
+                  // 本拍依旧执行ST指令
+                  EX_IR <= EX_IR;
                 end
                 JC: begin
                   if (C) begin
@@ -263,8 +277,24 @@ module controller (
       end else if (W == W2) begin
         case (SW)
           FETCH: begin
-                W <= W1;
-          end
+                case (EX_IR)
+                LD: begin
+                        DRW <= 1'b1;
+                        MBUS <= 1'b1;
+                        W <= W1;
+                end
+                ST: begin
+                        S <= 4'b1010;
+                        M <= 1'b1;
+                        ABUS <= 1'b1;
+                        MEMW <= 1'b1;
+                        W <= W1;
+                end
+                default: begin
+                        W <= W1;
+                end
+                endcase
+                end 
           WREG: begin
             if (!STO) begin
               SBUS <= 1'b1;
@@ -317,27 +347,12 @@ module controller (
             W <= W1;
           end
         endcase
-      end else if (W == W3) begin
-        case (EX_IR)
-          LD: begin
-            DRW <= 1'b1;
-            MBUS <= 1'b1;
-            W <= W1;
-          end
-          ST: begin
-            S <= 4'b1010;
-            M <= 1'b1;
-            ABUS <= 1'b1;
-            MEMW <= 1'b1;
-            W <= W1;
-          end
-          default: begin
-            W <= W1;
-          end
-        endcase
-      end else begin
-        W <= W1;
       end
+      // 暂不需要第三阶段
+      /*
+      else if (W == W3) begin
+        W<=W1;
+      end*/
     end
   end
 
