@@ -135,10 +135,11 @@ module controller (
                   M <= 1'b1;
                   ABUS <= 1'b1;
                   LAR <= 1'b1;
-                  // LIR~EX_valid部分的作用是flush掉一阶段取指，下同
+                  // LD/ST不是错路径跳转，保留已经预取到IR的下一条指令。
+                  // 这里只暂停继续取指，并让EX在访存拍期间为空。
                   LIR <= 1'b0;
                   PCINC <= 1'b0;
-                  IF_valid <= 1'b0;
+                  IF_valid <= 1'b1;
                   EX_valid <= 1'b0;
                   W <= W2;
                   // 本拍依旧执行LD指令
@@ -149,10 +150,11 @@ module controller (
                   M <= 1'b1;
                   ABUS <= 1'b1;
                   LAR <= 1'b1;
-                  // LIR~EX_valid部分的作用是flush掉一阶段取指，下同
+                  // LD/ST不是错路径跳转，保留已经预取到IR的下一条指令。
+                  // 这里只暂停继续取指，并让EX在访存拍期间为空。
                   LIR <= 1'b0;
                   PCINC <= 1'b0;
-                  IF_valid <= 1'b0;
+                  IF_valid <= 1'b1;
                   EX_valid <= 1'b0;
                   W <= W2;
                   // 本拍依旧执行ST指令
