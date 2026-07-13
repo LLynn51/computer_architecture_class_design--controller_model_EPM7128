@@ -147,12 +147,26 @@ module controller (
                   W <= W3;
                 end
                 JC: begin
-                  if (C) PCADD <= 1'b1;
-                  W <= W1;
+                  if (C) begin
+                        PCADD <= 1'b1;
+                        LIR <= 1'b0;
+                        PCINC <= 1'b0;
+                        IF_valid <= 1'b0;
+                        EX_valid <= 1'b0;
+                  end
+                  else begin end
+                        W <= W1;
                 end
                 JZ: begin
-                  if (Z) PCADD <= 1'b1;
-                  W <= W1;
+                  if (Z) begin
+                        PCADD <= 1'b1;
+                        LIR <= 1'b0;
+                        PCINC <= 1'b0;
+                        IF_valid <= 1'b0;
+                        EX_valid <= 1'b0;
+                  end
+                  else begin end
+                        W <= W1;
                 end
                 JMP: begin
                   S <= 4'b1111;
@@ -160,6 +174,10 @@ module controller (
                   ABUS <= 1'b1;
                   LPC <= 1'b1;
                   W <= W1;
+                  IF_valid <= 1'b0;
+                  EX_valid <= 1'b0;
+                  LIR <= 1'b0;
+                  PCINC <= 1'b0;
                 end
                 STP: begin
                   STOP <= 1'b1;
@@ -245,7 +263,7 @@ module controller (
       end else if (W == W2) begin
         case (SW)
           FETCH: begin
-
+                W <= W1;
           end
           WREG: begin
             if (!STO) begin
